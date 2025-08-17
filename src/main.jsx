@@ -26,8 +26,9 @@ if ('serviceWorker' in navigator) {
       }
     }
     
-    // Now register our service worker
-    navigator.serviceWorker.register('/sw.js')
+    // Now register our service worker with correct path for GitHub Pages
+    const swPath = import.meta.env.BASE_URL + 'sw.js';
+    navigator.serviceWorker.register(swPath)
       .then(registration => {
         console.log('SW registered:', registration);
         // Force update to get the latest version

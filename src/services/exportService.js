@@ -318,8 +318,8 @@ export const exportService = {
     let imported = 0;
     const totalRows = data.filter(row => row['Name']).length;
     
-    await db.transaction('rw', db.cards, async () => {
-      for (let i = 0; i < data.length; i++) {
+    // Don't wrap in transaction here - let caller handle it if needed
+    for (let i = 0; i < data.length; i++) {
         const row = data[i];
         // Skip empty rows
         if (!row['Name']) continue;
@@ -421,7 +421,6 @@ export const exportService = {
           await new Promise(resolve => setTimeout(resolve, 100));
         }
       }
-    });
     
     return imported;
   },
@@ -429,8 +428,8 @@ export const exportService = {
   async importLending(data) {
     let imported = 0;
     
-    await db.transaction('rw', db.lending, db.borrowers, db.cards, async () => {
-      for (const row of data) {
+    // Don't wrap in transaction here - let caller handle it if needed
+    for (const row of data) {
         if (!row['Card Name'] || !row['Borrower']) continue;
         
         // Find or create borrower
@@ -466,7 +465,6 @@ export const exportService = {
           imported++;
         }
       }
-    });
     
     return imported;
   },
@@ -474,8 +472,8 @@ export const exportService = {
   async importTrades(data) {
     let imported = 0;
     
-    await db.transaction('rw', db.trades, async () => {
-      for (const row of data) {
+    // Don't wrap in transaction here - let caller handle it if needed
+    for (const row of data) {
         if (!row['Trader']) continue;
         
         await db.trades.add({
@@ -488,7 +486,6 @@ export const exportService = {
         });
         imported++;
       }
-    });
     
     return imported;
   },
@@ -716,26 +713,25 @@ Note: When importing cards, the app will automatically fetch card images from th
   async importBorrowers(data) {
     let imported = 0;
     
-    await db.transaction('rw', db.borrowers, async () => {
-      for (const row of data) {
-        if (!row['Name']) continue;
-        
-        // Check if borrower already exists
-        const existing = await db.borrowers
-          .where('name').equals(row['Name'])
-          .first();
-        
-        if (!existing) {
-          await db.borrowers.add({
-            name: row['Name'],
-            email: row['Email'] || '',
-            phone: row['Phone'] || '',
-            createdAt: new Date()
-          });
-          imported++;
-        }
+    // Don't wrap in transaction here - let caller handle it if needed
+    for (const row of data) {
+      if (!row['Name']) continue;
+      
+      // Check if borrower already exists
+      const existing = await db.borrowers
+        .where('name').equals(row['Name'])
+        .first();
+      
+      if (!existing) {
+        await db.borrowers.add({
+          name: row['Name'],
+          email: row['Email'] || '',
+          phone: row['Phone'] || '',
+          createdAt: new Date()
+        });
+        imported++;
       }
-    });
+    }
     
     return imported;
   },
@@ -743,26 +739,25 @@ Note: When importing cards, the app will automatically fetch card images from th
   async importWishlist(data) {
     let imported = 0;
     
-    await db.transaction('rw', db.wishlist, async () => {
-      for (const row of data) {
-        if (!row['Card Name']) continue;
-        
-        // Check if wishlist item already exists
-        const existing = await db.wishlist
-          .where('cardName').equals(row['Card Name'])
-          .first();
-        
-        if (!existing) {
-          await db.wishlist.add({
-            cardName: row['Card Name'],
-            setName: row['Set Name'] || '',
-            priority: row['Priority'] || 'medium',
-            createdAt: new Date()
-          });
-          imported++;
-        }
+    // Don't wrap in transaction here - let caller handle it if needed
+    for (const row of data) {
+      if (!row['Card Name']) continue;
+      
+      // Check if wishlist item already exists
+      const existing = await db.wishlist
+        .where('cardName').equals(row['Card Name'])
+        .first();
+      
+      if (!existing) {
+        await db.wishlist.add({
+          cardName: row['Card Name'],
+          setName: row['Set Name'] || '',
+          priority: row['Priority'] || 'medium',
+          createdAt: new Date()
+        });
+        imported++;
       }
-    });
+    }
     
     return imported;
   }
