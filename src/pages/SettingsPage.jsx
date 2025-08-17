@@ -3,7 +3,8 @@ import { cacheService } from '../services/cacheService';
 import reminderService from '../services/reminderService';
 import ExportManager from '../components/ExportManager';
 import BackupManager from '../components/BackupManager';
-import { BellIcon, TrashIcon, CloudArrowDownIcon, CloudArrowUpIcon } from '@heroicons/react/24/outline';
+import db from '../db/database';
+import { BellIcon, TrashIcon, CloudArrowDownIcon, CloudArrowUpIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
 export default function SettingsPage() {
   const [notificationStatus, setNotificationStatus] = useState(reminderService.getNotificationStatus());
@@ -23,6 +24,53 @@ export default function SettingsPage() {
     if (confirm('Are you sure you want to clear all cached data?')) {
       cacheService.clearAll();
       alert('Cache cleared successfully');
+    }
+  };
+
+  const handleClearAllData = async () => {
+    const confirmed = confirm(
+      'WARNING: This will permanently delete ALL your data including:\n\n' +
+      '• All Pokemon cards\n' +
+      '• All lending records\n' +
+      '• All trade history\n' +
+      '• All borrower information\n' +
+      '• All wishlist items\n\n' +
+      'This action cannot be undone!\n\n' +
+      'Are you absolutely sure you want to delete all data?'
+    );
+    
+    if (confirmed) {
+      const doubleConfirmed = confirm(
+        'This is your final warning!\n\n' +
+        'Type "DELETE" to confirm you want to permanently delete all data.'
+      );
+      
+      if (doubleConfirmed) {
+        const userInput = prompt('Type DELETE to confirm:');
+        if (userInput === 'DELETE') {
+          try {
+            // Clear all tables
+            await db.cards.clear();
+            await db.lending.clear();
+            await db.trades.clear();
+            await db.borrowers.clear();
+            await db.wishlist.clear();
+            
+            // Also clear cache
+            cacheService.clearAll();
+            
+            alert('All data has been cleared successfully. You can now import fresh data.');
+            
+            // Reload the page to reset the UI
+            window.location.reload();
+          } catch (error) {
+            console.error('Failed to clear data:', error);
+            alert('Failed to clear data. Please try again.');
+          }
+        } else {
+          alert('Data deletion cancelled.');
+        }
+      }
     }
   };
 
@@ -177,6 +225,34 @@ export default function SettingsPage() {
                 >
                   Export
                 </button>
+              </div>
+              
+              {/* Clear All Data */}
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <ExclamationTriangleIcon className="h-6 w-6 text-red-500 mr-3" />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                        Clear All Data
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Permanently delete all data for a fresh start
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleClearAllData}
+                    className="inline-flex items-center px-4 py-2 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50 dark:border-red-700 dark:text-red-400 dark:bg-gray-800 dark:hover:bg-red-900/20"
+                  >
+                    Clear All Data
+                  </button>
+                </div>
+                <div className="mt-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                  <p className="text-sm text-red-700 dark:text-red-300">
+                    <strong>Warning:</strong> This will permanently delete all your data. Make sure to create a backup first if you want to keep your data.
+                  </p>
+                </div>
               </div>
               
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
