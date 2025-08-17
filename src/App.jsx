@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, createHashRouter } from 'react-router-dom';
 import { useEffect, lazy, Suspense } from 'react';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
@@ -13,7 +13,8 @@ const TradePage = lazy(() => import('./pages/TradePage'));
 const StatsPage = lazy(() => import('./pages/StatsPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 
-const router = createBrowserRouter([
+// Use HashRouter for GitHub Pages compatibility
+const router = createHashRouter([
   {
     path: '/',
     element: <Layout />,
