@@ -1,0 +1,32 @@
+{
+  "short_name": "PokeInventory",
+  "name": "Pokemon Card Inventory Manager",
+  "description": "Track your Pokemon card collection, manage lending, and record trades",
+  "icons": [
+    {
+      "src": "/pokeball.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#1f2937",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#3b82f6",
+  "categories": ["games", "utilities"],
+  "screenshots": [
+    {
+      "src": "/screenshot1.png",
+      "type": "image/png",
+      "sizes": "1280x720",
+      "label": "Collection View"
+    },
+    {
+      "src": "/screenshot2.png",
+      "type": "image/png",
+      "sizes": "1280x720",
+      "label": "Statistics Dashboard"
+    }
+  ]
+}

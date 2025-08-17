@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:dexie.org)",
+      "WebFetch(domain:docs.pokemontcg.io)",
+      "WebFetch(domain:react-papaparse.js.org)",
+      "WebFetch(domain:react-pdf.org)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:recharts.org)",
+      "WebFetch(domain:react-chartjs-2.js.org)",
+      "Bash(npm install:*)",
+      "Bash(mkdir:*)",
+      "Bash(npx tailwindcss init:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run build:*)",
+      "Bash(curl:*)",
+      "Bash(rm:*)",
+      "Bash(grep:*)",
+      "Bash(npx playwright install:*)",
+      "Bash(node:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
